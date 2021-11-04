@@ -2,7 +2,7 @@ module TestSuite3 where
 
 import Angabe3
 import Test.Tasty as T
-import Test.Tasty.HUnit as T
+import Test.Tasty.HUnit as T ( testCase, (@?=) )
 import Test.Tasty.Ingredients (composeReporters)
 import Test.Tasty.Ingredients.ConsoleReporter (consoleTestReporter)
 import Test.Tasty.ExpectedFailure
@@ -20,7 +20,9 @@ spec =
       matrixtyp_Tests,
       geichheit_Tests,
       expectFail geichheit_fail_Tests,
-      addition_Tests
+      addition_Tests,
+      multiplikation_Tests,
+      fromInteger_Tests
     ]
 
 -- threeGees
@@ -100,4 +102,28 @@ addition_Tests = testGroup
         M [[1,2,3], [1,2,3], [1,2,3]] + M [[1,2,3], [1,2,3], [1,2,3]] @?= M [[2,4,6], [2,4,6], [2,4,6]],
       testCase "2x3 - 2x3" $ do
         M [[1,2,3], [1,2,3], [1,2,3]] - M [[1,2,3], [1,2,3], [1,2,3]] @?= M [[0,0,0], [0,0,0], [0,0,0]]
+    ]
+
+multiplikation_Tests :: TestTree
+multiplikation_Tests = testGroup
+    "Multiplikation Tests"
+    [ testCase "1*1=1" $ do
+        M [[1]] * M [[1]] @?= M [[1]],
+      testCase "1*(-1)=(-1)" $ do
+        M [[1]] * M [[-1]] @?= M [[-1]],
+      testCase "2x3 * 3*2" $ do
+        M [[1,1,1],[1,1,1]] * M [[1,1], [1,1], [1,1]] @?= M [[3, 3], [3, 3]],
+      testCase "Undefined: 2x3 * 2x2" $ do
+        show (M [[1,1,1],[1,1,1]] * M [[1,1], [1,1]]) @?= "()",
+      testCase "Skalarprodukt -1" $ do
+        M [[-1]] * M [[1,1], [1,1]] @?= M [[-1,-1], [-1,-1]]
+    ]
+
+fromInteger_Tests :: TestTree
+fromInteger_Tests = testGroup
+    "fromInteger Tests"
+    [ testCase "1" $ do
+        1 @?= M [[1]],
+      testCase "-1" $ do
+        (-1) @?= M [[-1]]
     ]
